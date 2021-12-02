@@ -1,0 +1,40 @@
+{
+    "name": "adscomltd/larapack_riskified",
+    "description": "Add support for Riskified",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Armen Matevosyan",
+            "email": "aamatevosyan@edu.hse.ru",
+            "homepage": "https://hyperstech.com"
+        }
+    ],
+    "homepage": "https://github.com/adscomltd/larapack_riskified",
+    "keywords": ["Laravel", "LarapackRiskified"],
+    "require": {
+        "illuminate/support": "~8",
+        "riskified/php_sdk": "^1.9"
+    },
+    "require-dev": {
+      "roave/security-advisories": "dev-latest",
+      "phpunit/phpunit": "~9.0",
+        "orchestra/testbench": "~6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Adscom\\LarapackRiskified\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Adscom\\LarapackRiskified\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+      "laravel": {
+          "providers": [
+              "Adscom\\LarapackRiskified\\LarapackRiskifiedServiceProvider"
+          ]
+      }
+  }
+}
