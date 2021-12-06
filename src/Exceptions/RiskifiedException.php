@@ -2,7 +2,7 @@
 
 namespace Adscom\LarapackRiskified\Exceptions;
 
-use App\Models\Order;
+use Adscom\LarapackRiskified\Contracts\Order;
 use Adscom\LarapackRiskified\Models\RiskifiedLog;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +20,7 @@ class RiskifiedException extends Exception
     parent::__construct($this->exception->getMessage(), $this->exception->getCode());
   }
 
-  public function report()
+  public function report(): void
   {
     // logic changed we need to put accept if get 400 from riskified
     $this->riskifiedLog->status = RiskifiedLog::STATUS_EXCEPTION;
@@ -33,7 +33,7 @@ class RiskifiedException extends Exception
     Log::error(
       "Riskified: exception on {$this->apiName}",
       [
-        'order_id' => $this->order->id,
+        'order_id' => $this->order->getId(),
         'exception_message' => $this->exception->getMessage()
       ]
     );

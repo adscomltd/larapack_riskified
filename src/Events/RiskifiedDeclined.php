@@ -2,7 +2,7 @@
 
 namespace Adscom\LarapackRiskified\Events;
 
-use App\Models\Order;
+use Adscom\LarapackRiskified\Contracts\Order;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;

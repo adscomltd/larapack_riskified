@@ -2,25 +2,23 @@
 
 namespace Adscom\LarapackRiskified\DataTransferObjects;
 
-use App\Models\Order;
-use PaymentManager;
-use Riskified\OrderWebhook\Model;
+use Adscom\LarapackRiskified\Contracts\Order;
+use Riskified\OrderWebhook\Model\Order as RiskifiedOrder;
 
 class DecideData extends RiskifiedData
 {
   /**
-   * @param Order $orderModel
-   * @return Model\Order
-   * @throws \Exception
+   * @param  Order  $order
+   * @return RiskifiedOrder
    */
-  public function parse(Order $orderModel): Model\Order
+  public function parse(Order $order): RiskifiedOrder
   {
-    $order = (new CheckoutData)->parse($orderModel);
+    $riskifiedOrder = $order->getCheckoutData($this);
 
-    $order->billing_address = $this->getBillingAddress($orderModel);
+    $riskifiedOrder->billing_address = $order->getBillingAddress();
 
-    $order->gateway = PaymentManager::getDefaultDriver();
+    $order->gateway = $order->getPaymentGateway();
 
-    return $order;
+    return $riskifiedOrder;
   }
 }

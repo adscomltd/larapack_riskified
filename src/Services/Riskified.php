@@ -2,15 +2,15 @@
 
 namespace Adscom\LarapackRiskified\Services;
 
+use Adscom\LarapackRiskified\Contracts\Order;
 use Adscom\LarapackRiskified\Events\RiskifiedApproved;
 use Adscom\LarapackRiskified\Events\RiskifiedDeclined;
-use App\Models\Order;
 use Adscom\LarapackRiskified\Models\RiskifiedLog;
 use Adscom\LarapackRiskified\Exceptions\RiskifiedException;
+use Riskified\OrderWebhook\Model\Order as RiskifiedOrder;
 use Exception;
 use Log;
 use Riskified\OrderWebhook\Transport\CurlTransport;
-use Riskified\OrderWebhook\Model;
 use Str;
 
 /**
@@ -96,7 +96,7 @@ class Riskified
       $this->request(RiskifiedLog::STAGE_CHECKOUT, $order);
     }
 
-    return $order->uuid;
+    return $order->getUuid();
   }
 
   /**
@@ -115,23 +115,21 @@ class Riskified
       if (!$status) {
         // declined
         $this->onDecline($order);
-//        event(new RiskifiedDeclined($order));
       } else {
         // approved
         $this->onApprove($order);
-//        event(new RiskifiedApproved($order));
       }
     }
 
     return $status;
   }
 
-  public function onDecline(Order $order)
+  public function onDecline(Order $order): void
   {
     event(new RiskifiedDeclined($order));
   }
 
-  public function onApprove(Order $order)
+  public function onApprove(Order $order): void
   {
     event(new RiskifiedApproved($order));
   }
@@ -145,6 +143,7 @@ class Riskified
    */
   private function request(int $stage, Order $order): RiskifiedLog
   {
+    /** @var RiskifiedLog $riskifiedLog */
     $riskifiedLog = $order->riskifiedLogs()->create([
       'stage' => $stage,
     ]);
@@ -159,7 +158,7 @@ class Riskified
       Log::info(
         "Riskified: send {$this->steps[$stage]['api_call_name']}",
         [
-          'order_id' => $order->uuid,
+          'order_id' => $order->getUuid(),
           'request_data' => $data->toJson(),
           'response' => $response
         ]
@@ -186,7 +185,7 @@ class Riskified
    * @param  Order  $order
    * @return mixed
    */
-  private function prepareDataForRequest(int $stage, Order $order): Model\Order
+  private function prepareDataForRequest(int $stage, Order $order): RiskifiedOrder
   {
     $dtoClassName = ucfirst($this->steps[$stage]['name']).'Data';
     $namespace = Str::of(__NAMESPACE__)->beforeLast('\\').'\\DataTransferObjects';
