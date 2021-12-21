@@ -13,6 +13,7 @@
     "keywords": ["Laravel", "LarapackRiskified"],
     "require": {
         "illuminate/support": "~8",
+        "jenssegers/agent": "^2.6",
         "riskified/php_sdk": "^1.9"
     },
     "require-dev": {
